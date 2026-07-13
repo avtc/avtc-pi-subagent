@@ -1,6 +1,6 @@
 {
   "name": "avtc-pi-subagent",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A subagent tool supporting context compaction and nested subagents — user-customizable models (with round-robin) and tool policies, extensible via hooks.",
   "type": "module",
   "main": "./index.ts",
@@ -8,7 +8,7 @@
   "pi": {
     "extensions": [
       "./index.ts",
-      "node_modules/avtc-pi-subagent-ui-bridge/index.ts"
+      "../avtc-pi-subagent-ui-bridge/index.ts"
     ],
     "allowedCodeDeps": [
       "avtc-pi-logger",
@@ -31,8 +31,7 @@
     "test": "node scripts/test-low-priority.cjs \"node scripts/run-parallel.cjs \"npm run lint:optional-params :: npm run lint:bare-literals :: npm run lint:design-refs :: npm run lint:as-never :: npm run lint:bundled-imports :: npm run lint :: npm run typecheck :: npm run knip :: npm run dupes\" && vitest run\"",
     "dupes": "jscpd src/ --exit-code --threshold 0.01",
     "lint:as-never": "node scripts/no-as-never.cjs src/ tests/ index.ts",
-    "lint:bundled-imports": "node scripts/no-bundled-extension-imports.cjs src/ index.ts",
-    "prepublishOnly": "node scripts/check-symlinks.mjs"
+    "lint:bundled-imports": "node scripts/no-bundled-extension-imports.cjs src/ index.ts"
   },
   "dependencies": {
     "avtc-pi-logger": "^1.0.0",
@@ -70,8 +69,5 @@
     "docs/",
     "LICENSE",
     "README.md"
-  ],
-  "bundledDependencies": [
-    "avtc-pi-subagent-ui-bridge"
   ]
 }

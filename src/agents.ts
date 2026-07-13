@@ -212,7 +212,7 @@ export function discoverAgents(cwd: string): AgentDiscoveryResult {
   const userDir = _userAgentsDir();
   const projectAgentsDir = findNearestProjectAgentsDir(cwd);
   const thisFile = fileURLToPath(import.meta.url);
-  const packageRoot = path.resolve(path.dirname(thisFile), "..", "..");
+  const packageRoot = path.resolve(path.dirname(thisFile), "..");
   const bundledAgentsDir = path.join(packageRoot, "agents");
 
   const userAgents = loadAgentsFromDir(userDir);
