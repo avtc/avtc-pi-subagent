@@ -40,7 +40,7 @@ describe("createForkedTask", () => {
   });
 
   it("suffixes a -plan-review-N report path", () => {
-    const task = "Follow .ff/task-plans/-plan-review-2.md";
+    const task = "Follow .featyard/task-plans/-plan-review-2.md";
     expect(createForkedTask("p", task, undefined).task).toContain("-plan-review-2-fork.md");
   });
 

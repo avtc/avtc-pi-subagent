@@ -32,4 +32,4 @@ The helper cleans its listeners on `session_shutdown` (which fires before reload
 
 ## Reference implementation
 
-[avtc-pi-feature-flow](https://github.com/avtc/avtc-pi-feature-flow) integrates via the remaining four hooks: it substitutes prompt templates, resolves stage models, and registers its `skills/` and `agents/` directories. Its `extensions/subagent-integration.ts` is a working example of the pattern above.
+[avtc-pi-featyard](https://github.com/avtc/avtc-pi-featyard) integrates via the remaining four hooks: it substitutes prompt templates, resolves stage models, and registers its `skills/` and `agents/` directories. Its `extensions/subagent-integration.ts` is a working example of the pattern above.

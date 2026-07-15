@@ -489,7 +489,7 @@ export default function subagentExtension(pi: ExtensionAPI): void {
     const { hidden, disabled } = loadVisibilityGlobs();
     const list = formatVisibleAgentList(discovery.agents, hidden, disabled);
     // Always note that additional agents may appear at runtime (e.g. integration
-    // paths, fork subagents). The note is unconditional — feature-flow or the
+    // paths, fork subagents). The note is unconditional — featyard or the
     // user can spawn *-fork agents dynamically, and other extensions can call
     // addAgentsPaths after tool registration.
     const runtimeNote = "Other agents may be available at runtime — use them when instructed.";

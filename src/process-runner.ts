@@ -578,7 +578,7 @@ export async function runSingleAgent(
             promptInFlight = true;
             currentResult.stderr += `[rpc] Manual compaction cancelled; resuming (attempt ${resumeCount}/${MAX_RESUMES}).\n`;
             if (isStdinOpen) {
-              // streamingBehavior:"followUp" — a feature-flow compaction extension may
+              // streamingBehavior:"followUp" — a featyard compaction extension may
               // already have resumed the child (in-process, ~500ms) before this settle timer
               // fires (~2000ms), leaving the session streaming. Without streamingBehavior the
               // RPC prompt throws "Agent is already processing". followUp queues harmlessly
@@ -713,7 +713,7 @@ export async function runSingleAgent(
             activeRun = true;
             promptInFlight = false;
             // A new turn started — the cancelled-manual-compaction stall is resolved. An
-            // in-process extension (e.g. feature-flow's compaction handler) may have resumed
+            // in-process extension (e.g. featyard's compaction handler) may have resumed
             // the child already (this agent_start), so the settle timer must NOT later send
             // a redundant resume. This new turn has a normal lifecycle (emits agent_end),
             // unlike the aborted run whose agent_end was suppressed. The flag was already

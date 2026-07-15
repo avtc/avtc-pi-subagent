@@ -169,10 +169,10 @@ describe("detectIntegrationCollisions", () => {
 
 describe("formatCollisionMessage", () => {
   it("reports the colliding agent name AND the extensions that define it, with a resolution hint", () => {
-    const collisions = [{ agentName: "shared", extensions: ["avtc-pi-feature-flow", "avtc-pi-todo"] }];
+    const collisions = [{ agentName: "shared", extensions: ["avtc-pi-featyard", "avtc-pi-todo"] }];
     const msg = formatCollisionMessage(collisions);
     expect(msg).toContain("Extension provided agent name collision:");
-    expect(msg).toContain('"shared" — defined by extensions: avtc-pi-feature-flow, avtc-pi-todo');
+    expect(msg).toContain('"shared" — defined by extensions: avtc-pi-featyard, avtc-pi-todo');
     expect(msg).toContain("Define a user or project agent with these names to override and resolve.");
   });
 

@@ -1456,7 +1456,7 @@ describe("processLine event routing", () => {
   });
 
   test("rpc skips redundant resume when an in-process extension resumed the child after an aborted compaction", async () => {
-    // feature-flow's compaction handler resumes the child in-process (sendUserMessage,
+    // featyard's compaction handler resumes the child in-process (sendUserMessage,
     // ~500ms) after an aborted manual compaction. The child's agent_start from that
     // resume arrives BEFORE the settle timer fires (~2000ms). That agent_start means the
     // stall is already resolved, so the settle timer must NOT send a redundant resume
@@ -1549,7 +1549,7 @@ describe("processLine event routing", () => {
 
   test("rpc successful (non-aborted) manual compaction does NOT trigger a parent resume", async () => {
     // A successful compaction self-continues via the child's own session_compact handler
-    // (feature-flow), so the parent must NOT send a resume. Only ABORTED manual compactions
+    // (featyard), so the parent must NOT send a resume. Only ABORTED manual compactions
     // (the suppressed-agent_end stall) trigger the resume.
     vi.useFakeTimers();
     setTestSettings({ spawnMode: "rpc" });

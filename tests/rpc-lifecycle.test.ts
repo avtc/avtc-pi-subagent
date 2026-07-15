@@ -162,7 +162,7 @@ describe("RPC subagent end-to-end lifecycle", () => {
 
   test("compaction self-continue: NOT closed between compaction_end and the continuation agent_start", async () => {
     // A SUCCESSFUL manual compaction self-continues via the child's own session_compact handler
-    // (feature-flow). The parent must keep the run alive across the compaction_end →
+    // (featyard). The parent must keep the run alive across the compaction_end →
     // continuation-agent_start window — settle must NOT close stdin there.
     vi.useFakeTimers();
     const proc = createFakeProcess();

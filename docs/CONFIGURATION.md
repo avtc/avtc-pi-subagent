@@ -141,7 +141,7 @@ A user or project agent overrides an extension-provided one of the same name. If
 
 ```
 Extension provided agent name collision:
-  "shared" — defined by extensions: avtc-pi-feature-flow, avtc-pi-todo
+  "shared" — defined by extensions: avtc-pi-featyard, avtc-pi-todo
 Define a user or project agent with these names to override and resolve.
 ```
 
