@@ -1,6 +1,6 @@
 {
   "name": "avtc-pi-subagent",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A subagent tool supporting context compaction and nested subagents — user-customizable models (with round-robin) and tool policies, extensible via hooks.",
   "type": "module",
   "main": "./index.ts",
@@ -34,16 +34,16 @@
     "lint:bundled-imports": "node scripts/no-bundled-extension-imports.cjs src/ index.ts"
   },
   "dependencies": {
-    "avtc-pi-logger": "^1.0.0",
-    "avtc-pi-settings-ui": "^1.0.0",
-    "avtc-pi-subagent-ui-bridge": "^1.0.0"
+    "avtc-pi-logger": "^1.0.3",
+    "avtc-pi-settings-ui": "^1.0.6",
+    "avtc-pi-subagent-ui-bridge": "^1.0.4"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
-    "@earendil-works/pi-agent-core": "^0.80.6",
-    "@earendil-works/pi-ai": "^0.80.6",
-    "@earendil-works/pi-coding-agent": "^0.80.6",
-    "@earendil-works/pi-tui": "^0.80.6",
+    "@earendil-works/pi-agent-core": "^0.80.10",
+    "@earendil-works/pi-ai": "^0.80.10",
+    "@earendil-works/pi-coding-agent": "^0.80.10",
+    "@earendil-works/pi-tui": "^0.80.10",
     "@types/node": "^25.9.3",
     "jscpd": "^5.0.10",
     "knip": "^6.17.1",
