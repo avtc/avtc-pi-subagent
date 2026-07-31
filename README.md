@@ -18,6 +18,12 @@ A subagent tool supporting context compaction and nested subagents — user-cust
 - **Orphan-safe** — subagents self-terminate if the parent process dies.
 - **Extensible** — other extensions integrate via the `pi-subagent:ready` event (model resolvers, prompt transformers, agent/skill paths).
 
+## Installation
+
+```bash
+pi install npm:avtc-pi-subagent
+```
+
 ## Defining agents
 
 Agents are markdown files (YAML frontmatter + system prompt body) in `~/.pi/agent/agents/`. Frontmatter fields: `name`, `description`, `tools`, `model`, `skills`, `extensions`, `hide-from-agents-list`.
@@ -61,12 +67,6 @@ Building an extension that integrates with subagents (model resolvers, prompt tr
 | Command | Description |
 |---|---|
 | `/subagent:settings` | Open the settings UI (concurrency, timeouts, max depth, spawn mode) |
-
-## Installation
-
-```bash
-pi install npm:avtc-pi-subagent
-```
 
 ## Full suite
 
