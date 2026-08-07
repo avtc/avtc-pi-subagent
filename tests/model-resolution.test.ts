@@ -104,7 +104,7 @@ describe("model-resolution specificity", () => {
   });
 
   it("escapes `[` / `]` in glob keys (brackets are literal, not a char class)", () => {
-    // Guards known-issue #23 (the `]`-escape SyntaxError) and locks literal-bracket
+    // Guards the `]`-escape SyntaxError and locks literal-bracket
     // behavior: `*[xy]*` must match the literal string containing `[xy]`, and must
     // NOT match `axb` (an unescaped `[xy]` would be a regex char class).
     const c = cfg({ "*[xy]*": ["A"] }, null);
