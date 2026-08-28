@@ -1,6 +1,6 @@
 {
   "name": "avtc-pi-subagent",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A subagent tool supporting context compaction and nested subagents — user-customizable models (with round-robin) and tool policies, extensible via hooks.",
   "type": "module",
   "main": "./index.ts",
@@ -14,7 +14,7 @@
       "avtc-pi-logger",
       "avtc-pi-settings-ui"
     ],
-    "image": "https://raw.githubusercontent.com/avtc/avtc-pi-subagent/main/assets/images/parallel-nested-compact-view.png"
+    "image": "https://raw.githubusercontent.com/avtc/avtc-pi-subagent/main/assets/images/cover.png"
   },
   "keywords": [
     "pi-package",
