@@ -17,7 +17,7 @@ import { join } from "node:path";
  * instructed." is always appended to the description (integration agents and
  * fork subagents can appear at runtime regardless of hidden agent count).
  */
-import type { ExtensionContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type { ExtensionContext, ExtensionToolContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { _resetAgentsPaths, type AgentConfig, addAgentsPaths } from "../src/agents.js";
 import { _resetAllTestHooks, _setDiscoverAgents, _setLoadSubagentConfig } from "../src/extension.js";
@@ -158,7 +158,7 @@ describe("hide-from-agents-list", () => {
       return registrations[0];
     };
 
-    const ctx = { cwd: process.cwd(), hasUI: false } as unknown as ExtensionContext;
+    const ctx = { cwd: process.cwd(), hasUI: false } as unknown as ExtensionContext & ExtensionToolContext;
 
     it("error response (invalid parameters) omits hidden agents", async () => {
       injectEmptyModelConfig();

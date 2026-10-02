@@ -2,7 +2,12 @@ import type { EventEmitter } from "node:events";
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 avtc <tarasenkov@gmail.com>
 
-import type { ExtensionAPI, ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionCommandContext,
+  ExtensionToolContext,
+  ToolDefinition,
+} from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { buildSubagentEnv } from "../src/env.js";
 import subagentExtension, {
@@ -17,7 +22,7 @@ import { createFakeProcess, MockSessionManager, setTestSettings, spawnCalledProm
 // forwards PI_SUBAGENT_TOOLS (frontmatter whitelist) + PI_SUBAGENT_IS_FORK (fork flag) to the
 // child; it does not resolve the child's tools.
 
-function registerTool(): { tool: ToolDefinition; ctx: ExtensionCommandContext } {
+function registerTool(): { tool: ToolDefinition; ctx: ExtensionCommandContext & ExtensionToolContext } {
   let tool: ToolDefinition | undefined;
   subagentExtension({
     registerTool: (t: ToolDefinition) => {
@@ -37,7 +42,7 @@ function registerTool(): { tool: ToolDefinition; ctx: ExtensionCommandContext } 
       // Fork-mode dispatch reaches sessionManager.constructor.open to create a branched
       // session; a class-based mock gives the instance a real .constructor.open.
       sessionManager: new MockSessionManager(),
-    } as unknown as ExtensionCommandContext,
+    } as unknown as ExtensionCommandContext & ExtensionToolContext,
   };
 }
 

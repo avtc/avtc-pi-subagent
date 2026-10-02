@@ -2,7 +2,12 @@ import type { EventEmitter } from "node:events";
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 avtc <tarasenkov@gmail.com>
 
-import type { ExtensionAPI, ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionCommandContext,
+  ExtensionToolContext,
+  ToolDefinition,
+} from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import subagentExtension, {
   _modelResolvers,
@@ -109,7 +114,7 @@ describe("cross-repo integration smoke check", () => {
 const spawnMock = vi.fn();
 const discoverAgentsMock = vi.fn();
 
-function registerTool(): { tool: ToolDefinition; ctx: ExtensionCommandContext } {
+function registerTool(): { tool: ToolDefinition; ctx: ExtensionCommandContext & ExtensionToolContext } {
   let tool: ToolDefinition | undefined;
   subagentExtension({
     registerTool: (t: ToolDefinition) => {
@@ -132,7 +137,7 @@ function registerTool(): { tool: ToolDefinition; ctx: ExtensionCommandContext } 
       // static, so fork mode works end-to-end; non-fork tests only call the
       // instance methods and are unaffected.
       sessionManager: new MockSessionManager(),
-    } as unknown as ExtensionCommandContext,
+    } as unknown as ExtensionCommandContext & ExtensionToolContext,
   };
 }
 

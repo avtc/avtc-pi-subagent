@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 avtc <tarasenkov@gmail.com>
 
-import type { ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type { ExtensionCommandContext, ExtensionToolContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentConfig } from "../src/agents.js";
 import { ConcurrencyGate } from "../src/concurrency.js";
@@ -156,7 +156,7 @@ describe("execute wires disabled globs into all dispatch modes", () => {
   };
   const worker: AgentConfig = { name: "worker", description: "d", systemPrompt: "", filePath: "/tmp/worker.md" };
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
   const spawnMock = vi.fn();
 
   const register = (cfg: SubagentConfig): void => {
@@ -184,7 +184,7 @@ describe("execute wires disabled globs into all dispatch modes", () => {
     _resetAllTestHooks();
     injectEmptyModelConfig();
     setTestSettings(null);
-    ctx = { cwd: process.cwd(), hasUI: false } as unknown as ExtensionCommandContext;
+    ctx = { cwd: process.cwd(), hasUI: false } as unknown as ExtensionCommandContext & ExtensionToolContext;
   });
   afterEach(() => {
     _resetAllTestHooks();

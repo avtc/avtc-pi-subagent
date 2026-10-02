@@ -11,7 +11,7 @@
  */
 
 import type { EventEmitter } from "node:events";
-import type { ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type { ExtensionCommandContext, ExtensionToolContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentConfig, AgentDiscoveryResult } from "../src/agents.js";
 import { _resetAllTestHooks, _setDiscoverAgents, _setLoadSubagentConfig } from "../src/extension.js";
@@ -31,7 +31,7 @@ const discoveryWith = (agents: AgentConfig[]): AgentDiscoveryResult => ({
 
 describe("discoverAgents per-cwd cache", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
   let emitter: EventEmitter;
 
   const register = (discoverFn: { (): AgentDiscoveryResult; calls: number }): void => {
@@ -57,7 +57,7 @@ describe("discoverAgents per-cwd cache", () => {
     _resetAllTestHooks();
     injectEmptyModelConfig();
     setTestSettings(null);
-    ctx = { cwd: process.cwd(), hasUI: false } as unknown as ExtensionCommandContext;
+    ctx = { cwd: process.cwd(), hasUI: false } as unknown as ExtensionCommandContext & ExtensionToolContext;
   });
 
   afterEach(() => {
@@ -93,7 +93,8 @@ describe("discoverAgents per-cwd cache", () => {
     const callsAfterSessionStart = discover.calls;
 
     // A different cwd is a different cache key -> one fresh read for that cwd.
-    const otherCtx = { cwd: "/some/other/cwd", hasUI: false } as unknown as ExtensionCommandContext;
+    const otherCtx = { cwd: "/some/other/cwd", hasUI: false } as unknown as ExtensionCommandContext &
+      ExtensionToolContext;
     await tool.execute("id", { agent: "worker", task: "t" }, undefined, undefined, otherCtx);
     expect(discover.calls).toBe(callsAfterSessionStart + 1);
 

@@ -14,7 +14,12 @@
  * even though it was actively streaming the whole time.
  */
 import type { ChildProcess } from "node:child_process";
-import type { ExtensionAPI, ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionCommandContext,
+  ExtensionToolContext,
+  ToolDefinition,
+} from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import subagentExtension, { _resetAllTestHooks, _setDiscoverAgents, _setSpawn } from "../src/extension.js";
 import type { SingleResult } from "../src/types.js";
@@ -48,7 +53,7 @@ function registerTool() {
       cwd: process.cwd(),
       hasUI: false,
       sessionManager: { getSessionFile: () => "/test/session.jsonl", getLeafId: () => "leaf-123" },
-    } as unknown as ExtensionCommandContext,
+    } as unknown as ExtensionCommandContext & ExtensionToolContext,
   };
 }
 
@@ -74,7 +79,7 @@ function emit(proc: ChildProcess, event: Record<string, unknown>): void {
 
 describe("inactivity timer reset on streaming deltas", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -200,7 +205,7 @@ describe("inactivity timer reset on streaming deltas", () => {
 
 describe("inactivity timer suspended during auto-retry backoff (both modes)", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -293,7 +298,7 @@ describe("inactivity timer suspended during auto-retry backoff (both modes)", ()
 
 describe("inactivity timer suspended during compaction (both modes)", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -407,7 +412,7 @@ describe("inactivity timer suspended during compaction (both modes)", () => {
  */
 describe("inactivity timer paused during the subagent tool (nested spawn)", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();

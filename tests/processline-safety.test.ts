@@ -23,7 +23,12 @@
  * specific handler so the test stays valid if individual holes are later guarded.
  */
 import type { ChildProcess } from "node:child_process";
-import type { ExtensionAPI, ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionCommandContext,
+  ExtensionToolContext,
+  ToolDefinition,
+} from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import subagentExtension, { _resetAllTestHooks, _setDiscoverAgents, _setSpawn } from "../src/extension.js";
 import type { SingleResult } from "../src/types.js";
@@ -69,7 +74,7 @@ function registerTool() {
       cwd: process.cwd(),
       hasUI: false,
       sessionManager: { getSessionFile: () => "/test/session.jsonl", getLeafId: () => "leaf-123" },
-    } as unknown as ExtensionCommandContext,
+    } as unknown as ExtensionCommandContext & ExtensionToolContext,
   };
 }
 
@@ -94,7 +99,7 @@ function emit(proc: ChildProcess, event: Record<string, unknown>): void {
 
 describe("processLine stream-line safety net", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();

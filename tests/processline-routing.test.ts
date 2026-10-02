@@ -12,7 +12,12 @@ import type { EventEmitter } from "node:events";
  * through stdout. Verify the final SingleResult has correct progress, output,
  * filesChanged, testsRan, and usage fields.
  */
-import type { ExtensionAPI, ExtensionCommandContext, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionCommandContext,
+  ExtensionToolContext,
+  ToolDefinition,
+} from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import subagentExtension, { _resetAllTestHooks, _setDiscoverAgents, _setSpawn } from "../src/extension.js";
 import type { SingleResult } from "../src/types.js";
@@ -45,7 +50,7 @@ function registerTool() {
       cwd: process.cwd(),
       hasUI: false,
       sessionManager: { getSessionFile: () => "/test/session.jsonl", getLeafId: () => "leaf-123" },
-    } as unknown as ExtensionCommandContext,
+    } as unknown as ExtensionCommandContext & ExtensionToolContext,
   };
 }
 
@@ -77,7 +82,7 @@ async function waitForSpawn(): Promise<void> {
 
 async function runWithEvents(
   tool: ToolDefinition,
-  ctx: ExtensionCommandContext,
+  ctx: ExtensionCommandContext & ExtensionToolContext,
   events: Record<string, unknown>[],
   exitCode: number,
 ) {
@@ -99,7 +104,7 @@ async function runWithEvents(
 
 describe("processLine event routing", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -784,7 +789,7 @@ describe("processLine event routing", () => {
       { agent: "worker-fork", task: "fork me" },
       undefined,
       vi.fn(),
-      forkCtx as unknown as ExtensionCommandContext,
+      forkCtx as unknown as ExtensionCommandContext & ExtensionToolContext,
     );
     await waitForSpawn();
 
@@ -2315,7 +2320,7 @@ describe("processLine event routing", () => {
 
 describe("spawnMode", () => {
   let tool: ToolDefinition;
-  let ctx: ExtensionCommandContext;
+  let ctx: ExtensionCommandContext & ExtensionToolContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
