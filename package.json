@@ -1,6 +1,6 @@
 {
   "name": "avtc-pi-subagent",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A subagent tool supporting context compaction and nested subagents — user-customizable models (with round-robin) and tool policies, extensible via hooks.",
   "type": "module",
   "main": "./index.ts",
@@ -36,8 +36,8 @@
   },
   "dependencies": {
     "avtc-pi-logger": "^1.0.3",
-    "avtc-pi-settings-ui": "^1.0.8",
-    "avtc-pi-subagent-ui-bridge": "^1.0.5"
+    "avtc-pi-settings-ui": "^1.0.12",
+    "avtc-pi-subagent-ui-bridge": "^1.0.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
