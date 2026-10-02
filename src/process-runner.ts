@@ -853,8 +853,8 @@ export async function runSingleAgent(
             const filePath = event.args?.path || event.args?.file_path;
             if (typeof filePath === "string") filesChangedSet.add(filePath);
           }
-          // Track testsRan
-          if (toolName === "bash" && typeof event.args?.command === "string") {
+          // Track testsRan (bash + powershell shell tools)
+          if ((toolName === "bash" || toolName === "powershell") && typeof event.args?.command === "string") {
             if (isTestCommand(event.args.command)) currentResult.testsRan = true;
           }
           emitUpdate();

@@ -151,3 +151,15 @@ describe("extractToolArgsPreview", () => {
     expect(result).toBe("...");
   });
 });
+
+describe("extractToolArgsPreview — powershell (pi 0.84.3+)", () => {
+  test("powershell: formats command with PS prefix", () => {
+    const result = extractToolArgsPreview("powershell", { command: "npm test" });
+    expect(result).toBe("PS npm test");
+  });
+
+  test("powershell: multi-line shows first line only", () => {
+    const result = extractToolArgsPreview("powershell", { command: "line1\nline2\nline3" });
+    expect(result).toBe("PS line1 ... (+2 more lines)");
+  });
+});

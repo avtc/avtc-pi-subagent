@@ -170,6 +170,19 @@ describe("processLine event routing", () => {
     expect(r.filesChanged).toContain("src/existing.ts");
   });
 
+  test("tool_execution_start tracks testsRan for powershell test commands (pi 0.84.3+)", async () => {
+    const events = [
+      { type: "tool_execution_start", toolName: "powershell", toolCallId: "tc1", args: { command: "npx vitest run" } },
+      { type: "tool_execution_end", toolName: "powershell", toolCallId: "tc1", isError: false },
+      { type: "message_end", message: { role: "assistant", content: [{ type: "text", text: "Done" }] } },
+    ];
+
+    const result = await runWithEvents(tool, ctx, events, 0);
+    const r = (result.details as { results: SingleResult[] }).results[0];
+
+    expect(r.testsRan).toBe(true);
+  });
+
   test("filesChanged deduplicates same path across write and edit", async () => {
     const events = [
       { type: "tool_execution_start", toolName: "write", toolCallId: "tc1", args: { path: "src/foo.ts" } },

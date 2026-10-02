@@ -395,6 +395,15 @@ export function extractToolArgsPreview(toolName: string, args: Record<string, un
       result = `$ ${firstLine}${extra}`;
       break;
     }
+    case "powershell": {
+      // PowerShell shell tool (pi ≥ 0.84.3) — same input shape as bash.
+      const command = (args.command as string) || "...";
+      const lines = command.split("\n");
+      const firstLine = lines[0];
+      const extra = lines.length > 1 ? ` ... (+${lines.length - 1} more lines)` : "";
+      result = `PS ${firstLine}${extra}`;
+      break;
+    }
     case "read": {
       const rawPath = (args.file_path || args.path || "...") as string;
       const filePath = shortenPath(rawPath);
