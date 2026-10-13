@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 avtc <tarasenkov@gmail.com>
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { buildSubagentEnv } from "../src/env.js";
+import { applySessionOwlSubagentPolicy, buildSubagentEnv } from "../src/env.js";
 
 describe("buildSubagentEnv", () => {
   const originalEnv = process.env;
@@ -126,5 +126,60 @@ describe("buildSubagentEnv", () => {
     process.env.UNDEF_VAR = undefined as unknown as string;
     const env = buildSubagentEnv();
     expect("UNDEF_VAR" in env).toBe(false);
+  });
+});
+
+describe("applySessionOwlSubagentPolicy", () => {
+  const OWL = "PI_SETTINGS_SESSION_OWL";
+
+  test("absent blob: writes nothing, inherited env untouched", () => {
+    const env: Record<string, string | undefined> = {};
+    applySessionOwlSubagentPolicy(env);
+    expect(env[OWL]).toBeUndefined();
+  });
+
+  test("disableForSubagents on: rewrites the SAME blob with enabled off, never sparse", () => {
+    // THE critical shape: the owl env read is ABSOLUTE — a one-key fragment
+    // would reset every other knob to its default (the 4000/40 failure class).
+    const env: Record<string, string | undefined> = {
+      [OWL]: JSON.stringify({
+        enabled: true,
+        disableForSubagents: true,
+        observerThresholdTokens: 1,
+        observerMaxTokens: 16384,
+      }),
+    };
+    applySessionOwlSubagentPolicy(env);
+    const parsed = JSON.parse(env[OWL] ?? "missing") as Record<string, unknown>;
+    expect(parsed.enabled).toBe(false);
+    expect(parsed.disableForSubagents).toBe(true);
+    expect(parsed.observerThresholdTokens).toBe(1);
+    expect(parsed.observerMaxTokens).toBe(16384);
+  });
+
+  test("disableForSubagents off (or absent): the blob is byte-identical", () => {
+    const off = JSON.stringify({ enabled: true, disableForSubagents: false, debugLog: true });
+    const plain = JSON.stringify({ enabled: true, debugLog: true });
+    const envOff: Record<string, string | undefined> = { [OWL]: off };
+    const envPlain: Record<string, string | undefined> = { [OWL]: plain };
+    applySessionOwlSubagentPolicy(envOff);
+    applySessionOwlSubagentPolicy(envPlain);
+    expect(envOff[OWL]).toBe(off);
+    expect(envPlain[OWL]).toBe(plain);
+  });
+
+  test("a child blob already off stays off (idempotent rewrite)", () => {
+    const env: Record<string, string | undefined> = {
+      [OWL]: JSON.stringify({ enabled: false, disableForSubagents: true }),
+    };
+    applySessionOwlSubagentPolicy(env);
+    const parsed = JSON.parse(env[OWL] ?? "missing") as Record<string, unknown>;
+    expect(parsed.enabled).toBe(false);
+  });
+
+  test("malformed inherited blob: leave the env exactly as-is", () => {
+    const env: Record<string, string | undefined> = { [OWL]: "{not json" };
+    applySessionOwlSubagentPolicy(env);
+    expect(env[OWL]).toBe("{not json");
   });
 });

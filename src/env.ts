@@ -50,3 +50,27 @@ export function buildSubagentEnv(): Record<string, string | undefined> {
 
   return env;
 }
+
+/**
+ * session-owl subagent policy: the parent's owl settings arrive as the
+ * serialized `PI_SETTINGS_SESSION_OWL` blob. When that blob opts out for
+ * subagents (`disableForSubagents`), the child gets the SAME blob rewritten
+ * with session-owl's master switch off — never a one-key fragment: the owl
+ * settings read is absolute, so a sparse blob would silently reset every
+ * other knob to its default. Absent or malformed blob: the inherited env is
+ * left exactly as-is (today's behavior).
+ */
+export function applySessionOwlSubagentPolicy(env: Record<string, string | undefined>): void {
+  const serialized = env.PI_SETTINGS_SESSION_OWL;
+  if (typeof serialized !== "string" || serialized.length === 0) return;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(serialized);
+  } catch {
+    return;
+  }
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) return;
+  const settings = parsed as Record<string, unknown>;
+  if (settings.disableForSubagents !== true) return;
+  env.PI_SETTINGS_SESSION_OWL = JSON.stringify({ ...settings, enabled: false });
+}
