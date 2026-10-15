@@ -53,12 +53,18 @@ export function buildSubagentEnv(): Record<string, string | undefined> {
 
 /**
  * session-owl subagent policy: the parent's owl settings arrive as the
- * serialized `PI_SETTINGS_SESSION_OWL` blob. When that blob opts out for
- * subagents (`disableForSubagents`), the child gets the SAME blob rewritten
- * with session-owl's master switch off — never a one-key fragment: the owl
- * settings read is absolute, so a sparse blob would silently reset every
- * other knob to its default. Absent or malformed blob: the inherited env is
- * left exactly as-is (today's behavior).
+ * serialized `PI_SETTINGS_SESSION_OWL` blob. The blob's `subagentMode` decides
+ * what the child gets — always the SAME blob rewritten, never a one-key
+ * fragment: the owl settings read is absolute, so a sparse blob would
+ * silently reset every other knob to its default. Absent or malformed blob:
+ * the inherited env is left exactly as-is (today's behavior).
+ *
+ *   disabled     → the blob with session-owl's master switch off (the child
+ *                  owl instance is fully off — no capture, no takeover)
+ *   on-compaction → the blob with observerMode forced to "on-compaction"
+ *                  (the child's memory is captured only if/when the child
+ *                  itself compacts — the compaction catch-up owns it)
+ *   inherited    → untouched (the child gets the parent's settings verbatim)
  */
 export function applySessionOwlSubagentPolicy(env: Record<string, string | undefined>): void {
   const serialized = env.PI_SETTINGS_SESSION_OWL;
@@ -71,6 +77,9 @@ export function applySessionOwlSubagentPolicy(env: Record<string, string | undef
   }
   if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) return;
   const settings = parsed as Record<string, unknown>;
-  if (settings.disableForSubagents !== true) return;
-  env.PI_SETTINGS_SESSION_OWL = JSON.stringify({ ...settings, enabled: false });
+  if (settings.subagentMode === "disabled") {
+    env.PI_SETTINGS_SESSION_OWL = JSON.stringify({ ...settings, enabled: false });
+  } else if (settings.subagentMode === "on-compaction") {
+    env.PI_SETTINGS_SESSION_OWL = JSON.stringify({ ...settings, observerMode: "on-compaction" });
+  }
 }
