@@ -184,7 +184,12 @@ describe("applySessionOwlSubagentPolicy", () => {
   });
 
   test("subagentMode inherited (or absent): the blob is byte-identical", () => {
-    const inherited = JSON.stringify({ enabled: true, subagentMode: "inherited", observerMode: "on-threshold", debugLog: true });
+    const inherited = JSON.stringify({
+      enabled: true,
+      subagentMode: "inherited",
+      observerMode: "on-threshold",
+      debugLog: true,
+    });
     const plain = JSON.stringify({ enabled: true, debugLog: true });
     const envInherited: Record<string, string | undefined> = { [OWL]: inherited };
     const envPlain: Record<string, string | undefined> = { [OWL]: plain };
