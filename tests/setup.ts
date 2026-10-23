@@ -17,7 +17,20 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { beforeEach } from "vitest";
 
-const tempLogDir = mkdtempSync(path.join(tmpdir(), "avtc-pi-subagent-test-logs-"));
+// The logger resolves PI_LOGGER_DIR ONCE at module load (createLogger caches the writer's
+// baseDir), and isolate:false shares that module across every file in this worker — a
+// per-FILE dir would be silently ignored by files 2+ (their log writes recreate file 1's
+// dir even after its cleanup). So: ONE dir per worker. The first setup run creates it and
+// later runs reuse it; the per-worker dirs (workers are killed without a clean exit, so
+// no in-worker hook is reliable) are swept by prefix in the globalSetup registered in
+// vitest.config.ts.
+type WorkerWithLogDir = typeof process & { __subagentTestLogDir?: string };
+const worker = process as WorkerWithLogDir;
+let tempLogDir = worker.__subagentTestLogDir;
+if (tempLogDir === undefined) {
+  tempLogDir = mkdtempSync(path.join(tmpdir(), "avtc-pi-subagent-test-logs-"));
+  worker.__subagentTestLogDir = tempLogDir;
+}
 process.env.PI_LOGGER_DIR = tempLogDir;
 
 // Each test starts with a clean child-enforcement + dispatch env so a test that drives
