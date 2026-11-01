@@ -17,7 +17,7 @@ import * as path from "node:path";
 import type { AgentToolResult } from "@earendil-works/pi-agent-core";
 import { type AgentConfig, isVisible } from "./agents.js";
 import type { ConcurrencyGate } from "./concurrency.js";
-import { applySessionOwlSubagentPolicy, buildSubagentEnv } from "./env.js";
+import { buildSubagentEnv } from "./env.js";
 // The parent forwards the child's frontmatter whitelist via PI_SUBAGENT_TOOLS (spawn env
 // below); the child self-restricts from settings.json policy + frontmatter + PI_SUBAGENT_TOOLS_ADD.
 import { buildForkInstruction, getForkAgentSuffix } from "./fork.js";
@@ -509,10 +509,6 @@ export async function runSingleAgent(
       const childSettings = { ...settings, maxSubagentDepth: settings.maxSubagentDepth - 1 };
       subagentEnv.PI_SETTINGS_SUBAGENT = JSON.stringify(childSettings);
       subagentEnv.PI_SUBAGENT_PARENT_PID = String(process.pid);
-      // session-owl: the child's owl settings ride the inherited env blob —
-      // when that blob opts out for subagents, hand the child the same blob
-      // with owl's master switch off (full blob; see the policy's doc)
-      applySessionOwlSubagentPolicy(subagentEnv);
       const invocation = getPiInvocation(args);
       // RPC needs stdin as a pipe (the parent writes prompt/shutdown commands to it);
       // json never uses stdin ('ignore'). Only stdin[0] differs — stdout/stderr always pipe.

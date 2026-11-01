@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 avtc <tarasenkov@gmail.com>
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { applySessionOwlSubagentPolicy, buildSubagentEnv } from "../src/env.js";
+import { buildSubagentEnv } from "../src/env.js";
 
 describe("buildSubagentEnv", () => {
   const originalEnv = process.env;
@@ -126,91 +126,5 @@ describe("buildSubagentEnv", () => {
     process.env.UNDEF_VAR = undefined as unknown as string;
     const env = buildSubagentEnv();
     expect("UNDEF_VAR" in env).toBe(false);
-  });
-});
-
-describe("applySessionOwlSubagentPolicy", () => {
-  const OWL = "PI_SETTINGS_SESSION_OWL";
-
-  test("absent blob: writes nothing, inherited env untouched", () => {
-    const env: Record<string, string | undefined> = {};
-    applySessionOwlSubagentPolicy(env);
-    expect(env[OWL]).toBeUndefined();
-  });
-
-  test("subagentMode disabled: rewrites the SAME blob with enabled off, never sparse", () => {
-    // THE critical shape: the owl env read is ABSOLUTE — a one-key fragment
-    // would reset every other knob to its default (the 4000/40 failure class).
-    const env: Record<string, string | undefined> = {
-      [OWL]: JSON.stringify({
-        enabled: true,
-        subagentMode: "disabled",
-        observerThresholdTokens: 1,
-        observerMaxTokens: 16384,
-      }),
-    };
-    applySessionOwlSubagentPolicy(env);
-    const parsed = JSON.parse(env[OWL] ?? "missing") as Record<string, unknown>;
-    expect(parsed.enabled).toBe(false);
-    expect(parsed.subagentMode).toBe("disabled");
-    expect(parsed.observerThresholdTokens).toBe(1);
-    expect(parsed.observerMaxTokens).toBe(16384);
-  });
-
-  test("subagentMode on-compaction: rewrites the SAME blob with the observer deferred to compaction", () => {
-    const env: Record<string, string | undefined> = {
-      [OWL]: JSON.stringify({
-        enabled: true,
-        subagentMode: "on-compaction",
-        observerMode: "on-threshold",
-        observerThresholdTokens: 4000,
-      }),
-    };
-    applySessionOwlSubagentPolicy(env);
-    const parsed = JSON.parse(env[OWL] ?? "missing") as Record<string, unknown>;
-    expect(parsed.enabled).toBe(true);
-    expect(parsed.observerMode).toBe("on-compaction");
-    expect(parsed.observerThresholdTokens).toBe(4000);
-  });
-
-  test("subagentMode on-compaction over an already-deferred blob: idempotent rewrite", () => {
-    const env: Record<string, string | undefined> = {
-      [OWL]: JSON.stringify({ enabled: true, subagentMode: "on-compaction", observerMode: "on-compaction" }),
-    };
-    applySessionOwlSubagentPolicy(env);
-    const parsed = JSON.parse(env[OWL] ?? "missing") as Record<string, unknown>;
-    expect(parsed.observerMode).toBe("on-compaction");
-    expect(parsed.enabled).toBe(true);
-  });
-
-  test("subagentMode inherited (or absent): the blob is byte-identical", () => {
-    const inherited = JSON.stringify({
-      enabled: true,
-      subagentMode: "inherited",
-      observerMode: "on-threshold",
-      debugLog: true,
-    });
-    const plain = JSON.stringify({ enabled: true, debugLog: true });
-    const envInherited: Record<string, string | undefined> = { [OWL]: inherited };
-    const envPlain: Record<string, string | undefined> = { [OWL]: plain };
-    applySessionOwlSubagentPolicy(envInherited);
-    applySessionOwlSubagentPolicy(envPlain);
-    expect(envInherited[OWL]).toBe(inherited);
-    expect(envPlain[OWL]).toBe(plain);
-  });
-
-  test("a child blob already off stays off (idempotent rewrite)", () => {
-    const env: Record<string, string | undefined> = {
-      [OWL]: JSON.stringify({ enabled: false, subagentMode: "disabled" }),
-    };
-    applySessionOwlSubagentPolicy(env);
-    const parsed = JSON.parse(env[OWL] ?? "missing") as Record<string, unknown>;
-    expect(parsed.enabled).toBe(false);
-  });
-
-  test("malformed inherited blob: leave the env exactly as-is", () => {
-    const env: Record<string, string | undefined> = { [OWL]: "{not json" };
-    applySessionOwlSubagentPolicy(env);
-    expect(env[OWL]).toBe("{not json");
   });
 });
